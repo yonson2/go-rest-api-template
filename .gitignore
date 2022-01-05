@@ -10,4 +10,4 @@
 vendor/
 /vendor/
 /Godeps/
-
+bin/

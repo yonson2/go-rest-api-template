@@ -10,20 +10,22 @@ import (
 	"github.com/yonson2/go-rest-api-template/pkg/storage"
 )
 
-type server struct {
+type Server struct {
 	router *httprouter.Router
 	db     storage.Storage
 	srv    http.Server
 }
 
-// New returns a new server instance
-func New(db storage.Storage) *server {
-	s := &server{
+// New returns a new server instance.
+func New(db storage.Storage) *Server {
+	config := config.New()
+
+	s := &Server{
 		router: httprouter.New(),
 	}
 	s.db = db
 	s.routes()
-	s.router.NotFound = http.HandlerFunc(handlers.JsonNotFound)
+	s.router.NotFound = http.HandlerFunc(handlers.JSONNotFound)
 
 	s.srv = http.Server{
 		Addr:    ":" + config.Port,
@@ -32,20 +34,20 @@ func New(db storage.Storage) *server {
 	return s
 }
 
-func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.router.ServeHTTP(w, r)
 }
 
 // StartServer starts listening on a TCP network, after it returns
-// the server is ready to start receiving connections
-func (s *server) StartServer() error {
+// the server is ready to start receiving connections.
+func (s *Server) StartServer() error {
 	return s.srv.ListenAndServe()
 }
 
-// Shutdown function, mainly used when implementing graceful shutdown
-func (s *server) Shutdown(ctx context.Context) error {
+// Shutdown function, mainly used when implementing graceful shutdown.
+func (s *Server) Shutdown(ctx context.Context) error {
 	return s.srv.Shutdown(ctx)
 }
-func (s *server) Close() error {
+func (s *Server) Close() error {
 	return s.srv.Close()
 }

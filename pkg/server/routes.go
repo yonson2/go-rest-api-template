@@ -6,10 +6,10 @@ import (
 	"github.com/yonson2/go-rest-api-template/pkg/handlers"
 )
 
-func (s *server) routes() {
+func (s *Server) routes() {
 	s.router.HandlerFunc("GET", "/", s.handleIndex())
 }
 
-func (s *server) handleIndex() http.HandlerFunc {
+func (s *Server) handleIndex() http.HandlerFunc {
 	return handlers.Index()
 }

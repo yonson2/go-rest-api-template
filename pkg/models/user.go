@@ -2,7 +2,7 @@ package models
 
 type User struct {
 	Base
-	AvatarUrl string
+	AvatarURL string
 	Email     string
 	Username  string
 }

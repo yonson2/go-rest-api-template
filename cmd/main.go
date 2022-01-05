@@ -25,23 +25,27 @@ func run() error {
 	if err != nil {
 		log.Fatalln("Error starting database: ", err)
 	}
-	storage.Migrate()
+
+	err = storage.Migrate()
+	if err != nil {
+		log.Fatalln("Error migrating database schema: ", err)
+	}
 
 	srv := server.New(storage)
 
-	//channel to listen for errors coming from the listener.
+	// channel to listen for errors coming from the listener.
 	serverErrors := make(chan error, 1)
 
-	//channel to listen for an interrupt or terminate signal from the OS.
+	// channel to listen for an interrupt or terminate signal from the OS.
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
 
 	go func() {
-		fmt.Println("[MAIN] API listening...")
+		log.Println("[MAIN] API listening...")
 		serverErrors <- srv.StartServer()
 	}()
 
-	//blocking run and waiting for shutdown.
+	// blocking run and waiting for shutdown.
 	select {
 	case err := <-serverErrors:
 		return fmt.Errorf("error: starting server: %s", err)

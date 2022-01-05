@@ -7,22 +7,25 @@ import (
 	"gorm.io/gorm"
 )
 
-// Ensure service implements interface
-var _ storage.Storage = (*SqlDB)(nil)
+// Ensure service implements interface.
+var _ storage.Storage = (*DB)(nil)
 
-type SqlDB struct {
+type DB struct {
 	client *gorm.DB
 }
 
-// NewSqliteDB returns an SqlDB client, backed by an sqlite driver
-func NewSqliteDB(dsn string) (*SqlDB, error) {
+// NewSqliteDB returns a Db client, backed by an sqlite driver.
+func NewSqliteDB(dsn string) (*DB, error) {
 	db, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
-	return &SqlDB{client: db}, nil
+
+	return &DB{client: db}, nil
 }
 
-func (sql *SqlDB) Migrate() {
-	sql.client.AutoMigrate(&models.User{})
+func (sql *DB) Migrate() error {
+	err := sql.client.AutoMigrate(&models.User{})
+
+	return err
 }

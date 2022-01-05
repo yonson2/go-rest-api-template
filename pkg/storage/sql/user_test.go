@@ -9,11 +9,16 @@ import (
 )
 
 func TestTeamService_CreateTeam(t *testing.T) {
-	is := is.New(t)
-
 	storage, err := sql.NewSqliteDB("file::memory:?cache=shared")
-	is.NoErr(err)
-	storage.Migrate()
-	_, err = storage.CreateUser(&models.User{Username: "Bonobxs", Email: "test@example.org"})
-	is.NoErr(err)
+
+	t.Run("it creates a user", func(t *testing.T) {
+		t.Parallel()
+		is := is.New(t)
+
+		is.NoErr(err)
+
+		_ = storage.Migrate()
+		_, err = storage.CreateUser(&models.User{Username: "Bonobxs", Email: "test@example.org"})
+		is.NoErr(err)
+	})
 }

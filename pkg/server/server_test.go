@@ -10,17 +10,25 @@ import (
 )
 
 func TestHandleIndex(t *testing.T) {
-	is := is.New(t)
-	srv := server.New(nil)
-	req, err := http.NewRequest("GET", "/", nil)
-	if err != nil {
-		t.Fatalf("Could not create request %v", err)
-	}
-	rec := httptest.NewRecorder()
-	srv.ServeHTTP(rec, req)
+	t.Run("it returns 200 on get /", func(t *testing.T) {
+		t.Parallel()
 
-	res := rec.Result()
-	defer res.Body.Close()
+		is := is.New(t)
+		srv := server.New(nil)
+		req, err := http.NewRequest("GET", "/", nil)
 
-	is.Equal(res.StatusCode, http.StatusOK)
+		if err != nil {
+			t.Fatalf("Could not create request %v", err)
+		}
+
+		rec := httptest.NewRecorder()
+
+		srv.ServeHTTP(rec, req)
+
+		res := rec.Result()
+		defer res.Body.Close()
+
+		is.Equal(res.StatusCode, http.StatusOK)
+
+	})
 }
