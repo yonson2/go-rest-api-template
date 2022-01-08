@@ -10,5 +10,5 @@ func (s *DB) CreateUser(user *models.User) (string, error) {
 		return "", result.Error
 	}
 
-	return user.ID.String(), nil
+	return user.ID, nil
 }
